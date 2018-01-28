@@ -1,0 +1,10 @@
+{
+    "DeploymentMethod": "lambda",
+    "Functions": {
+        "GAME": {
+            "PhysicalId": {
+                "us-east-1": "GAME"
+            }
+        }
+    }
+}
