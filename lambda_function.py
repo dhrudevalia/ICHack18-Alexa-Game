@@ -230,5 +230,82 @@ search_r = {
   "version": "1.0"
 }
 
+attack_r = {
+  "session": {
+    "new": False,
+    "sessionId": "SessionId.da1f9049-56f0-498d-9fd0-8055f51fabcc",
+    "application": {
+      "applicationId": "amzn1.ask.skill.0a173718-903e-48e5-b0cc-592f61de28a6"
+    },
+    "attributes": {},
+    "user": {
+      "userId": "amzn1.ask.account.AH5JKB3UIZLYS3GIFJA25Z6YKBSJV2KUO4NZKCAXQ3IBHEJLYJP7IVURZOX5BCPGICTJ3RR3AQOAHRIPXGV7EMAFHGOSXDEJOROU7I77MXWDST5UX3VQXNQHYR6F2M65DFO7ONXUVNFQABCZWIMUOUF2Y6NM3B6TQ7VWH6OGL4DSA4UHDTAZ2L7QUCL7OLIP2IEOBJPKCANKSEA"
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.e0c92d5c-3647-4a20-8493-cd9d8aa8a426",
+    "intent": {
+      "name": "DoGame",
+      "slots": {
+        "BLoc": {
+          "name": "BLoc"
+        },
+        "ANoun": {
+          "name": "ANoun"
+        },
+        "CLoc": {
+          "name": "CLoc"
+        },
+        "CNoun": {
+          "name": "CNoun"
+        },
+        "CUsing": {
+          "name": "CUsing",
+          "value": "with"
+        },
+        "BVerb": {
+          "name": "BVerb"
+        },
+        "BNoun": {
+          "name": "BNoun",
+          "value": "mutant"
+        },
+        "AVerb": {
+          "name": "AVerb",
+          "value": "attack"
+        },
+        "BSwitch": {
+          "name": "BSwitch"
+        },
+        "DNoun": {
+          "name": "DNoun",
+          "value": "machete"
+        }
+      }
+    },
+    "locale": "en-US",
+    "timestamp": "2018-01-28T12:20:11Z"
+  },
+  "context": {
+    "AudioPlayer": {
+      "playerActivity": "IDLE"
+    },
+    "System": {
+      "application": {
+        "applicationId": "amzn1.ask.skill.0a173718-903e-48e5-b0cc-592f61de28a6"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.AH5JKB3UIZLYS3GIFJA25Z6YKBSJV2KUO4NZKCAXQ3IBHEJLYJP7IVURZOX5BCPGICTJ3RR3AQOAHRIPXGV7EMAFHGOSXDEJOROU7I77MXWDST5UX3VQXNQHYR6F2M65DFO7ONXUVNFQABCZWIMUOUF2Y6NM3B6TQ7VWH6OGL4DSA4UHDTAZ2L7QUCL7OLIP2IEOBJPKCANKSEA"
+      },
+      "device": {
+        "supportedInterfaces": {}
+      }
+    }
+  },
+  "version": "1.0"
+}
+
 # print(lambda_handler(start_r,""))
 print(lambda_handler(search_r,""))
+# print(lambda_handler(attack_r,""))

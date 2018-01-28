@@ -1,5 +1,5 @@
 import game
-from world import initTotalItems, initCreatures
+from world import initTotalItems, initCreatures, initWeapons
 from world import noWeapon
 import move
 import random
@@ -83,7 +83,11 @@ def doAction(verb, noun, player):
 def doActionFight(verb, creature, weapon, player):
     for creatures in initCreatures:
         if(creature == creatures.getName()):
+            for w in initWeapons:
+                if (w.name == weapon):
+                    weapon = w
             maxdmg = weapon.getDmg()
+            print(maxdmg)
             r = random.randint(0, 3)
             if r == 3: # miss
                 return [maxdmg, 0, "miss"]

@@ -4,72 +4,6 @@
 #                DURING ICHACK 2018
 #           RIP NGE, "WITH WHAT", and D D 
 
-
-
-#------------FOR TESTING------------
-# class Room:
-#     def __init__(self, name, location, description, items, creatures, indoors, locks):
-#         self.name = name # String
-#         self.location = location # (x,y,z)
-#         self.description = description # String
-#         self.items = items # [Item Obj]
-#         self.indoors = indoors # Boolean
-#         self.locks = locks #array of booleans
-        
-#     def getItems(self):
-#         return self.items
-        
-#     def takeItem(self, item):
-#         return self.items.remove(item)
-    
-#     def dropItem(self, item):
-#         return self.items.append(item)
-        
-#     def getXCoord(self):
-#         return self.location[0]
-    
-#     def getYCoord(self):
-#         return self.location[1]
-        
-#     def getZCoord(self):
-#         return self.location[2]
-        
-#     def isIndoors(self):
-#         return self.indoors
-        
-#     def hasItem(self, itemName): # returns boolean
-#         for item in items:
-#             if item.getName == itemName:
-#                 return True
-#         return False
-        
-# class Player:
-#     def __init__(self, name, inventory, health, room):
-#         self.name = name # String
-#         self.inventory = inventory # [Items Obj]
-#         self.health = health # Int
-#         self.room = room # Room Obj
-        
-#     def getRoom(self):
-#         return self.room
-        
-#     def getName(self):
-#         return self.name
-
-# warehouse = Room("Warehouse", [0,0,0], """You are in what appears to be a large abandoned amazon fulfilment centre. 
-#                 Rows of shelves stretch along the warehouse. The floor is littered with long-dead package retrieval robots.
-#                 There is no sound, and almost no light, save for a faint glow from a large green message scrawled
-#                 on the north wall. The message reads: if you seek answers, journey north and find headquarters. 
-#                 Under the text, you can see a door, slightly ajar. There do not appear to be any other exits""",[],[], True,[])
-                
-# jungle_SW = Room("Southwest Jungle",[1,0,0],"",[], [], False, [])
-
-# initRooms = [
-#     warehouse,
-#     jungle_SW,
-# ]
-# REMOVE ABOVE AND COMMENT IMPORTS WHEN BELOW IS SUITABLE
-
 from weather import Weather
 from classes import Item, Weapon, Food, Room, Player, Creature
 from world import initRooms
@@ -84,7 +18,7 @@ import boto
 s3 = boto.s3.connect_to_region(
                     "eu-west-2",
                     aws_access_key_id="AKIAJYRKSTJ42QFU524Q",
-                    aws_secret_access_key="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"
+                    aws_secret_access_key="xfjLGwl/sUMYeDysBAHzGZFnYYKf9tAyZLXSC/50"
                 )
 bucket = s3.get_bucket('ichackgame', validate=False)
 key = bucket.new_key('save.dat')
@@ -105,11 +39,9 @@ soundEffect_jeff = '<audio src="https://s3.eu-west-2.amazonaws.com/ichackgame/je
 # -- Save functions --
 def save():
     key.set_contents_from_string(pickle.dumps([player, rooms, weather ]))
-    # key.set_contents_from_string(pickle.dumps([player, rooms]))
 
 def load():
     p, rs, w = pickle.loads(key.get_contents_as_string())
-    # p , rs = pickle.loads(key.get_contents_as_string())
     global player 
     player = p
     global rooms 
@@ -129,32 +61,6 @@ def getRoomWithCoords(coords):
         if (room.location == coords):
             return room
     return None
-    
-def hits(playerAttk, creatureAttk, attkType):
-    resStr = ""
-    isDead = False
-    i = random.randint(0,1)
-    
-    if (i == 0):
-        mutant.health = mutant.health - playerAttk
-        res = player.name + " struck first for " + playerAttk + " damage in a " + attkType + " . With " + player.health + " health points remaining."
-        if (mutant.getHealth() > 0):
-            first.health = first.health - creatureAttk
-            res += " . " + mutant.name + " fought back for " + creatureAttk + " damage"
-        else:
-            mutant = None
-            res += " Killing it"
-    else:
-        player.health = player.health - creatureAttk
-        res = mutant.name + " struck first for " + creatureAttk  + " . And has " + mutant.health + " health points remaining."
-        if (player.getHealth() > 0):
-            mutant.health = mutant.health - playerAttk
-            res += " . " + player.name + " fought back with a " + attkType + " for " + playerAttk + " damage"
-        else:
-            isDead = True
-            res += "You died"
-    save()
-    return {"toSay":resStr,"finish":isDead}
 
 def play(slots, new=False, token="", deviceId=""):
     toSay = ""
@@ -193,19 +99,24 @@ def play(slots, new=False, token="", deviceId=""):
             resStr = ""
             isDead = False
             a = action.doActionFight(values['AVerb'], values['BNoun'], values['DNoun'], player)
-            playerAttk = a[0]
-            creatureAttk = a[1]
+            playerAttk = a[1]
+            creatureAttk = a[0]
             attkType = a[2]
+            
             mutant = currentRoom.creatures[0]
             player.health = player.health - creatureAttk
-            res = mutant.name + " struck first for " + creatureAttk  + " . And has " + mutant.health + " health points remaining."
+            resStr = mutant.name + " hit for " + str(creatureAttk)  + " . And has " + str(mutant.health) + " health points remaining."
             if (player.getHealth() > 0):
                 mutant.health = mutant.health - playerAttk
-                res += " . " + player.name + " fought back with a " + attkType + " for " + playerAttk + " damage"
+                resStr += " . " + player.name + " fought back with a " + attkType + " for " + str(playerAttk) + " damage"
+                if (mutant.health < 0):
+                    resStr += " and killed it!"
+                    currentRoom.creatures = []
             else:
                 isDead = True
-                res += "You died"
+                resStr += "You died"
             save()
+                
             return {"toSay":resStr,"finish":isDead}
             
             # if (len(player.getInv) == 0) or (player.hasItem(DNoun)):
@@ -295,18 +206,21 @@ def play(slots, new=False, token="", deviceId=""):
                 creatureAttk = tryAction[1]
                 attkType = tryAction[2]
                 
-                mutant = currentRoom.creatures
-                mutant = mutant[0]
-                player.health = player.health - creatureAttk
-                resStr = mutant.name + " struck first for " + str(creatureAttk)  + " . And has " + str(mutant.health) + " health points remaining."
-                if (player.getHealth() > 0):
-                    mutant.health = mutant.health - playerAttk
-                    resStr += " . " + player.name + " fought back with a " + attkType + " for " + str(playerAttk) + " damage"
+                print(currentRoom.creatures)
+                if (len(currentRoom.creatures) != 0):
+                    mutant = currentRoom.creatures[0]
+                    player.health = player.health - creatureAttk
+                    resStr = mutant.name + " struck first for " + str(creatureAttk)  + " . And has " + str(mutant.health) + " health points remaining."
+                    if (player.getHealth() > 0):
+                        mutant.health = mutant.health - playerAttk
+                        resStr += " . " + player.name + " fought back with a " + attkType + " for " + str(playerAttk) + " damage"
+                    else:
+                        isDead = True
+                        resStr += "You died"
+                    save()
+                    return {"toSay":resStr,"finish":isDead}
                 else:
-                    isDead = True
-                    resStr += "You died"
-                save()
-                return {"toSay":resStr,"finish":isDead}
+                    return {"toSay":"Try again","finish":isDead}
             elif (type(tryAction) == str):
                 toSay = tryAction
             else:
