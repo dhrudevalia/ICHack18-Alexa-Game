@@ -83,7 +83,7 @@ import boto
 
 s3 = boto.s3.connect_to_region(
                     "eu-west-2",
-                    aws_access_key_id="AKIAIWDQLBLAQWDY4DCQ",
+                    aws_access_key_id="AKIAJYRKSTJ42QFU524Q",
                     aws_secret_access_key="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"
                 )
 bucket = s3.get_bucket('ichackgame', validate=False)
